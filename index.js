@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const db = process.env.DB_URI;
+const db = process.env.DB_ONLINE || "mongodb://localhost:27017/covid-aid";
 mongoose
   .connect(db, {
     // useCreateIndex: true,
