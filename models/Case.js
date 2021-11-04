@@ -18,11 +18,8 @@ const caseSchema = new Schema({
   caseRelationship: String,
   lastContact: String,
   contacted: Boolean,
+  caseFollowUp: { type: Schema.Types.ObjectId, ref: "CaseFollowUp" },
   testResult: [{ type: Schema.Types.ObjectId, ref: "TestReport" }],
-  // contact: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Contact",
-  // },
   createdAt: {
     type: Date,
     default: new Date(),

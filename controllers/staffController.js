@@ -7,8 +7,16 @@ const TestReport = require("../models/TestReport");
 const FollowUp = require("../models/CaseFollowUp");
 
 exports.createCase = async (req, res) => {
-  const { fullName, email, age, birthDate, address, occupation, phone } =
-    req.body;
+  const {
+    fullName,
+    email,
+    age,
+    birthDate,
+    address,
+    occupation,
+    phone,
+    gender,
+  } = req.body;
 
   try {
     const existingCase = await Case.findOne({ phone: phone });
@@ -21,6 +29,7 @@ exports.createCase = async (req, res) => {
     const newCase = await Case.create({
       fullName,
       email,
+      gender,
       age,
       birthDate,
       address,
@@ -48,7 +57,6 @@ exports.submitTestResult = async (req, res) => {
   try {
     const existingCase = await Case.findOne({ _id: caseId });
 
-    console.log(existingCase);
     if (testResult === "negative") {
       existingCase.status = "closed";
       return res.status(200).json({ message: "This case has being closed" });
@@ -66,7 +74,7 @@ exports.submitTestResult = async (req, res) => {
     }).save();
 
     if (result.length === 3) {
-      result.pop();
+      result.shift();
     }
     result.push(newTestResult._id);
     existingCase.testResult = result;
@@ -136,18 +144,57 @@ exports.addContact = async (req, res) => {
   }
 };
 
-// exports.addFollowUp= async (req,res)=>{
+exports.addFollowUp = async (req, res) => {
+  const {
+    healthStatus,
+    treatmentCenter,
+    treatmentStartDate,
+    prescription,
+    medTeamLeader,
+    symptoms,
+    caseId,
+  } = req.body;
 
-// const {}=req.body
+  try {
+    const existingCase = await Case.findOne({ _id: caseId });
 
-// }
+    let followUp;
+
+    if (!existingCase.caseFollowUp) {
+      followUp = FollowUp.findById({ _id: existingCase.caseFollowUp });
+    } else {
+      followUp = await new FollowUp().save();
+      existingCase.CaseFollowUp = followUp._id;
+      existingCase.save();
+    }
+
+    followUp.healthStatus = healthStatus;
+    followUp.treatmentCenter = treatmentCenter;
+    followUp.treatmentStartDate = treatmentStartDate;
+    followUp.prescription = prescription;
+    followUp.medTeamLeader = medTeamLeader;
+    followUp.symptoms = symptoms;
+    followUp.save();
+
+    res
+      .status(200)
+      .json({ message: "follow up information saved", existingCase });
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong", err: err.message });
+  }
+};
 
 exports.fetchCases = async (req, res) => {
   try {
-    const cases = await Case.find().populate({
-      path: "testResult",
-      model: "TestReport",
-    });
+    const cases = await Case.find()
+      .populate({
+        path: "testResult",
+        model: "TestReport",
+      })
+      .populate({
+        path: "caseFollowUp",
+        model: "CaseFollowUp",
+      });
 
     res.status(200).json(cases);
   } catch (err) {
