@@ -59,6 +59,7 @@ exports.submitTestResult = async (req, res) => {
 
     if (testResult === "negative") {
       existingCase.status = "closed";
+      await existingCase.save();
       return res.status(200).json({ message: "This case has being closed" });
     }
 
@@ -160,12 +161,21 @@ exports.addFollowUp = async (req, res) => {
 
     let followUp;
 
-    if (!existingCase.caseFollowUp) {
-      followUp = FollowUp.findById({ _id: existingCase.caseFollowUp });
+    if (existingCase.caseFollowUp) {
+      followUp = await FollowUp.findOne({ _id: existingCase.caseFollowUp });
     } else {
       followUp = await new FollowUp().save();
-      existingCase.CaseFollowUp = followUp._id;
-      existingCase.save();
+      existingCase.caseFollowUp = followUp._id;
+      await existingCase.save();
+    }
+
+    if (
+      healthStatus === "Recovered" ||
+      healthStatus === "Dead" ||
+      healthStatus === "Lost to Followup"
+    ) {
+      existingCase.status = "closed";
+      await existingCase.save();
     }
 
     followUp.healthStatus = healthStatus;
@@ -174,7 +184,7 @@ exports.addFollowUp = async (req, res) => {
     followUp.prescription = prescription;
     followUp.medTeamLeader = medTeamLeader;
     followUp.symptoms = symptoms;
-    followUp.save();
+    await followUp.save();
 
     res
       .status(200)
