@@ -9,6 +9,7 @@ router.post("/submitcase", staffController.createCase);
 router.post("/addcontact", staffController.addContact);
 router.post("/testresult", staffController.submitTestResult);
 router.post("/followup", staffController.addFollowUp);
+router.put("/editcase", staffController.editCase);
 router.get("/fetchcases", staffController.fetchCases);
 router.get("/fetchcontact/:id", staffController.fetchContacts);
 

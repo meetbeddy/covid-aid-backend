@@ -212,6 +212,38 @@ exports.fetchCases = async (req, res) => {
   }
 };
 
+exports.editCase = async (req, res) => {
+  const {
+    fullName,
+    email,
+    age,
+    birthDate,
+    address,
+    occupation,
+    phone,
+    gender,
+    caseId,
+  } = req.body;
+  try {
+    let filter = { _id: caseId };
+    let update = {
+      fullName,
+      email,
+      age,
+      birthDate,
+      address,
+      occupation,
+      phone,
+      gender,
+    };
+
+    const updated = await Case.findOneAndUpdate(filter, update, { new: true });
+
+    res.status(200).json({ message: "updated successfully", updated });
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong", err: err.message });
+  }
+};
 exports.fetchContacts = async (req, res) => {
   const id = req.params.id;
   try {
