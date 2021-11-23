@@ -16,6 +16,9 @@ exports.createCase = async (req, res) => {
     occupation,
     phone,
     gender,
+    state,
+    lga,
+    town,
   } = req.body;
 
   try {
@@ -35,6 +38,9 @@ exports.createCase = async (req, res) => {
       address,
       occupation,
       phone,
+      state,
+      lga,
+      town,
     });
 
     res.status(200).json({ message: "case successfully submitted", newCase });
@@ -98,6 +104,9 @@ exports.addContact = async (req, res) => {
     email,
     occupation,
     address,
+    state,
+    lga,
+    town,
     caseRelationship,
     lastContact,
     caseId,
@@ -119,6 +128,9 @@ exports.addContact = async (req, res) => {
       age,
       email,
       occupation,
+      state,
+      lga,
+      town,
       address,
       caseRelationship,
       lastContact,
@@ -153,6 +165,9 @@ exports.addFollowUp = async (req, res) => {
     prescription,
     medTeamLeader,
     symptoms,
+    bodyTemp,
+    weight,
+    height,
     caseId,
   } = req.body;
 
@@ -184,6 +199,9 @@ exports.addFollowUp = async (req, res) => {
     followUp.prescription = prescription;
     followUp.medTeamLeader = medTeamLeader;
     followUp.symptoms = symptoms;
+    followUp.bodyTemp = bodyTemp;
+    followUp.weight = weight;
+    followUp.height = height;
     await followUp.save();
 
     res
@@ -222,6 +240,9 @@ exports.editCase = async (req, res) => {
     occupation,
     phone,
     gender,
+    state,
+    lga,
+    town,
     caseId,
   } = req.body;
   try {
@@ -235,6 +256,9 @@ exports.editCase = async (req, res) => {
       occupation,
       phone,
       gender,
+      state,
+      lga,
+      town,
     };
 
     const updated = await Case.findOneAndUpdate(filter, update, { new: true });

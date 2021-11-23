@@ -9,6 +9,9 @@ const caseFollowUpSchema = new Schema(
     prescription: String,
     medTeamLeader: String,
     symptoms: String,
+    weight: String,
+    height: String,
+    bodyTemp: String,
   },
   { timestamps: true }
 );

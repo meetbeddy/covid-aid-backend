@@ -63,7 +63,7 @@ exports.createUser = async (req, res) => {
       }
     );
 
-    res.status(200).json({ user, token });
+    res.status(200).json({ message: "user created successfully" });
   } catch (err) {
     res.status(500).json({ message: "something went wrong", err: err.message });
   }

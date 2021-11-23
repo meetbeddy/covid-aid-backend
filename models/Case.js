@@ -10,6 +10,9 @@ const caseSchema = new Schema({
   birthDate: { type: String, required: true },
   age: { type: String, required: true },
   occupation: { type: String, required: true },
+  state: { type: String, required: true },
+  lga: { type: String, required: true },
+  town: { type: String, required: true },
   status: {
     type: String,
     enum: ["suspected", "confirmed", "closed"],
