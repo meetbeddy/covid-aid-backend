@@ -286,20 +286,13 @@ exports.fetchContacts = async (req, res) => {
 
 exports.removeCase = async (req, res) => {
   try {
-    await Case.deleteMany({
-      _id: {
-        $in: [req.body.id],
-      },
+    const cases = await Case.findOneAndDelete({
+      _id: req.body.id,
     });
-
-    try {
-      res.status(200).json({ message: "deleted successfully" });
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: "something went wrong", error: err.message });
-    }
+    res.status(200).json({ message: "deleted successfully", cases });
   } catch (err) {
-    res.status(500).json({ message: "something went wrong", err: err.message });
+    res
+      .status(500)
+      .json({ message: "something went wrong", error: err.message });
   }
 };
