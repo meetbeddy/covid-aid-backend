@@ -12,5 +12,6 @@ router.post("/followup", staffController.addFollowUp);
 router.put("/editcase", staffController.editCase);
 router.get("/fetchcases", staffController.fetchCases);
 router.get("/fetchcontact/:id", staffController.fetchContacts);
+router.delete("/removecase", staffController.removeCase);
 
 module.exports = router;
