@@ -174,16 +174,24 @@ exports.addFollowUp = async (req, res) => {
   try {
     const existingCase = await Case.findOne({ _id: caseId });
 
-    let followUp;
+    let caseFollowUp = existingCase.followUp;
 
-    if (existingCase.caseFollowUp) {
-      followUp = await FollowUp.findOne({ _id: existingCase.caseFollowUp });
-    } else {
-      followUp = await new FollowUp().save();
-      existingCase.caseFollowUp = followUp._id;
-      await existingCase.save();
-    }
+    const newFollowUp = await new FollowUp({
+      healthStatus,
+      treatmentCenter,
+      treatmentStartDate,
+      prescription,
+      medTeamLeader,
+      symptoms,
+      bodyTemp,
+      weight,
+      height,
+    }).save();
 
+    caseFollowUp.push(newFollowUp._id);
+    existingCase.caseFollowUp = caseFollowUp;
+
+    await existingCase.save();
     if (
       healthStatus === "Recovered" ||
       healthStatus === "Dead" ||
@@ -192,17 +200,6 @@ exports.addFollowUp = async (req, res) => {
       existingCase.status = "closed";
       await existingCase.save();
     }
-
-    followUp.healthStatus = healthStatus;
-    followUp.treatmentCenter = treatmentCenter;
-    followUp.treatmentStartDate = treatmentStartDate;
-    followUp.prescription = prescription;
-    followUp.medTeamLeader = medTeamLeader;
-    followUp.symptoms = symptoms;
-    followUp.bodyTemp = bodyTemp;
-    followUp.weight = weight;
-    followUp.height = height;
-    await followUp.save();
 
     res
       .status(200)
